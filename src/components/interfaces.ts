@@ -1,5 +1,6 @@
 export interface ITodoData {
-  status: string;
+  isCompleted: boolean;
+  isEditing: boolean;
   description: string;
   created: string;
   id: number;
