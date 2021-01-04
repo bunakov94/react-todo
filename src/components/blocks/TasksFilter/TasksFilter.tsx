@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import './TasksFilter.scss';
 
-const TaskFilter = () => (
-  <ul className="filters">
-    <li>
-      <button type="button" className="selected">
-        All
-      </button>
-    </li>
-    <li>
-      <button type="button">Active</button>
-    </li>
-    <li>
-      <button type="button">Completed</button>
-    </li>
-  </ul>
-);
+type TaskFilterProps = {
+  filter: string;
+  onChangeFilter: Function;
+};
+export default class TaskFilter extends Component<TaskFilterProps> {
+  buttons = [
+    { name: 'all', label: 'ALL' },
+    { name: 'active', label: 'Active' },
+    { name: 'completed', label: 'Completed' },
+  ];
 
-export default TaskFilter;
+  render() {
+    const { filter, onChangeFilter } = this.props;
+    return (
+      <ul className="filters">
+        {this.buttons.map(({ name, label }) => (
+          <li key={name}>
+            <button onClick={() => onChangeFilter(name)} type="button" className={filter === name ? 'selected' : ''}>
+              {label}
+            </button>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+}

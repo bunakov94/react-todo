@@ -17,6 +17,7 @@ interface ITodoData {
 
 type AppState = {
   todoData: ITodoData[];
+  filter: string;
 };
 
 type AppProps = {};
@@ -45,6 +46,7 @@ export default class App extends Component<AppProps, AppState> {
         id: 2,
       },
     ],
+    filter: 'all',
   };
 
   makeCompleted = (id: number) => {
@@ -88,17 +90,39 @@ export default class App extends Component<AppProps, AppState> {
     });
   };
 
+  onChangeFilter = (filter: string) => {
+    this.setState({ filter });
+  };
+
+  filterItems(todos: ITodoData[], filter: string) {
+    let result = todos;
+    if (filter === 'active') {
+      result = todos.filter((item) => !item.isCompleted);
+    }
+    if (filter === 'completed') {
+      result = todos.filter((item) => item.isCompleted);
+    }
+    return result;
+  }
+
   render() {
-    const { todoData } = this.state;
+    const { todoData, filter } = this.state;
     const totalTodoCount = todoData.length;
     const completedTodoCount = todoData.filter((el) => el.isCompleted).length;
     const leftTodoCount = totalTodoCount - completedTodoCount;
+    const todos = this.filterItems(todoData, filter);
+
     return (
       <section className="todoapp">
         <Header addTodo={this.addTodo} />
         <section className="main">
-          <TaskList todos={todoData} makeCompleted={this.makeCompleted} deleteTodoItem={this.deleteTodoItem} />
-          <Footer leftTodoes={leftTodoCount} deleteAllCompletedTodoes={this.deleteAllCompletedTodoes} />
+          <TaskList todos={todos} makeCompleted={this.makeCompleted} deleteTodoItem={this.deleteTodoItem} />
+          <Footer
+            leftTodoes={leftTodoCount}
+            deleteAllCompletedTodoes={this.deleteAllCompletedTodoes}
+            filter={filter}
+            onChangeFilter={this.onChangeFilter}
+          />
         </section>
       </section>
     );
