@@ -28,21 +28,21 @@ export default class App extends Component<AppProps, AppState> {
         isEditing: false,
         description: 'Completed task',
         created: formatDistanceToNow(new Date()),
-        id: 123,
+        id: 0,
       },
       {
         isCompleted: false,
-        isEditing: false,
+        isEditing: true,
         description: 'Editing task',
         created: formatDistanceToNow(new Date()),
-        id: 456,
+        id: 1,
       },
       {
         isCompleted: false,
         isEditing: false,
         description: 'Active task',
         created: formatDistanceToNow(new Date()),
-        id: 789,
+        id: 2,
       },
     ],
   };
@@ -50,31 +50,66 @@ export default class App extends Component<AppProps, AppState> {
   makeCompleted = (id: number) => {
     this.setState(({ todoData }) => {
       const index = todoData.findIndex((el) => el.id === id);
-      const oldItem = todoData[index];
-      const newItem = { ...oldItem, isCompleted: !oldItem.isCompleted };
+      const newItem = { ...todoData[index], isCompleted: !todoData[index].isCompleted };
       const newState = [...todoData.slice(0, index), newItem, ...todoData.slice(index + 1)];
       return { todoData: newState };
     });
   };
 
-  deleteTodo = (id: number) => {
+  deleteTodoItem = (id: number) => {
     this.setState(({ todoData }) => {
       const newState = todoData.filter((el) => el.id !== id);
       return { todoData: newState };
     });
   };
 
+  deleteAllCompletedTodoes = () => {
+    this.setState(({ todoData }) => {
+      const newState = todoData.filter((el) => !el.isCompleted);
+      return { todoData: newState };
+    });
+  };
+
+  getId = ({ todoData } = this.state) => todoData.length;
+
+  addTodo = (text: string) => {
+    const newTodo = {
+      description: text,
+      isCompleted: false,
+      isEditing: false,
+      created: formatDistanceToNow(new Date()),
+      id: this.getId(),
+    };
+
+    this.setState(({ todoData }) => {
+      const newState = [...todoData, newTodo];
+
+      return { todoData: newState };
+    });
+  };
+
   render() {
     const { todoData } = this.state;
-
+    const totalTodoCount = todoData.length;
+    const completedTodoCount = todoData.filter((el) => el.isCompleted).length;
+    const leftTodoCount = totalTodoCount - completedTodoCount;
     return (
       <section className="todoapp">
-        <Header />
+        <Header addTodo={this.addTodo} />
         <section className="main">
-          <TaskList todos={todoData} onDone={this.makeCompleted} onDelete={this.deleteTodo} />
-          <Footer />
+          <TaskList todos={todoData} makeCompleted={this.makeCompleted} deleteTodoItem={this.deleteTodoItem} />
+          <Footer leftTodoes={leftTodoCount} deleteAllCompletedTodoes={this.deleteAllCompletedTodoes} />
         </section>
       </section>
     );
   }
 }
+// TODO: TODO: TODO: Переделать ID - криво работает при добавлении и удалении
+// TODO: Реализовать добавление задачTODO:
+// TODO: Реализовать логику фильтрации
+// *Если выбран таб All, то отображаются все задачи.
+// *Если выбран таб Active, то отображаются лишь незавершенные задачи
+// *Если выбран таб Completed, то отображаются лишь завершенные задачи
+// TODO: TODO: Добавьте возможность удаления всех Completed задач нажатием на кнопку "Clear completed", которая расположена в нижней части списка задач с правой стороны.
+// TODO: TODO:Добавьте логику для счетчика незавершенных задач, расположенного в нижней части списка задач с левой стороны. Счетчик всегда должен показывать общее количество незавершенных задач независимо от того, что отображается на экране пользователя и какой таб выбран.
+// TODO: Результат должен быть ссылкой на репозиторий гитхаб

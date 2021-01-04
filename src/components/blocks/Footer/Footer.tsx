@@ -3,11 +3,16 @@ import TaskFilter from '../TasksFilter';
 
 import './Footer.scss';
 
-const Footer = () => (
+type FooterProps = {
+  leftTodoes: number;
+  deleteAllCompletedTodoes: Function;
+};
+
+const Footer: React.FC<FooterProps> = ({ leftTodoes, deleteAllCompletedTodoes }: FooterProps) => (
   <footer className="footer">
-    <span className="todo-count">1 items left</span>
+    <span className="todo-count">{leftTodoes} items left</span>
     <TaskFilter />
-    <button type="button" className="clear-completed">
+    <button type="button" className="clear-completed" onClick={() => deleteAllCompletedTodoes()}>
       Clear completed
     </button>
   </footer>

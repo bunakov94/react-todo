@@ -2,10 +2,14 @@ import React from 'react';
 import NewTaskForm from '../NewTaskForm';
 import './Header.scss';
 
-const Header = () => (
+type HeaderProps = {
+  addTodo: Function;
+};
+
+const Header: React.FC<HeaderProps> = ({ addTodo }: HeaderProps) => (
   <header>
     <h1>todos</h1>
-    <NewTaskForm />
+    <NewTaskForm addTodo={addTodo} />
   </header>
 );
 

@@ -13,14 +13,19 @@ interface ITodoDataList {
 
 type TodoListProps = {
   todos: ITodoDataList[];
-  onDone: Function;
-  onDelete: Function;
+  makeCompleted: Function;
+  deleteTodoItem: Function;
 };
 
-const TaskList: React.FC<TodoListProps> = ({ todos, onDone, onDelete }: TodoListProps) => (
+const TaskList: React.FC<TodoListProps> = ({ todos, makeCompleted, deleteTodoItem }: TodoListProps) => (
   <ul className="todo-list">
     {todos.map((item) => (
-      <Task {...item} key={item.id} onChangeStatus={() => onDone(item.id)} onDeleteTodo={() => onDelete(item.id)} />
+      <Task
+        {...item}
+        key={item.id}
+        makeCompleted={() => makeCompleted(item.id)}
+        deleteTodoItem={() => deleteTodoItem(item.id)}
+      />
     ))}
   </ul>
 );

@@ -6,16 +6,16 @@ interface ITodoDataList {
   isEditing: boolean;
   description: string;
   created: string;
-  onChangeStatus: Function;
-  onDeleteTodo: Function;
+  makeCompleted: Function;
+  deleteTodoItem: Function;
 }
 const Task: React.FC<ITodoDataList> = ({
   isCompleted,
   isEditing,
   description,
   created,
-  onChangeStatus,
-  onDeleteTodo,
+  makeCompleted,
+  deleteTodoItem,
 }: ITodoDataList) => (
   <li className={classNames({ completed: isCompleted, editing: isEditing })}>
     <div className="view">
@@ -24,14 +24,14 @@ const Task: React.FC<ITodoDataList> = ({
         type="checkbox"
         name="input"
         defaultChecked={isCompleted}
-        onClick={() => onChangeStatus()}
+        onClick={() => makeCompleted()}
       />
       <label htmlFor="input">
         <span className="description">{description}</span>
         <span className="created">{created}</span>
       </label>
       <button type="button" aria-label="edit" className="icon icon-edit" />
-      <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => onDeleteTodo()} />
+      <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => deleteTodoItem()} />
     </div>
     <input type="text" className="edit" value="Editing task" readOnly />
   </li>
