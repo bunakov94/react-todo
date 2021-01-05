@@ -7,18 +7,13 @@ type FooterProps = {
   leftTodoes: number;
   deleteAllCompletedTodoes: Function;
   filter: string;
-  onChangeFilter: Function;
+  changeFilter: Function;
 };
 
-const Footer: React.FC<FooterProps> = ({
-  leftTodoes,
-  deleteAllCompletedTodoes,
-  filter,
-  onChangeFilter,
-}: FooterProps) => (
+const Footer: React.FC<FooterProps> = ({ leftTodoes, deleteAllCompletedTodoes, filter, changeFilter }: FooterProps) => (
   <footer className="footer">
     <span className="todo-count">{leftTodoes} items left</span>
-    <TaskFilter filter={filter} onChangeFilter={onChangeFilter} />
+    <TaskFilter filter={filter} changeFilter={changeFilter} />
     <button type="button" className="clear-completed" onClick={() => deleteAllCompletedTodoes()}>
       Clear completed
     </button>

@@ -6,25 +6,25 @@ import './TaskList.scss';
 interface ITodoDataList {
   isCompleted: boolean;
   isEditing: boolean;
-  description: string;
-  created: string;
-  id: number;
+  todoText: string;
+  timeOfCreation: Date;
+  id: string;
 }
 
 type TodoListProps = {
-  todos: ITodoDataList[];
-  makeCompleted: Function;
-  deleteTodoItem: Function;
+  todoArr: ITodoDataList[];
+  makeTodoCompleted: Function;
+  deleteTodo: Function;
 };
 
-const TaskList: React.FC<TodoListProps> = ({ todos, makeCompleted, deleteTodoItem }: TodoListProps) => (
+const TaskList: React.FC<TodoListProps> = ({ todoArr, makeTodoCompleted, deleteTodo }: TodoListProps) => (
   <ul className="todo-list">
-    {todos.map((item) => (
+    {todoArr.map((item) => (
       <Task
         {...item}
         key={item.id}
-        makeCompleted={() => makeCompleted(item.id)}
-        deleteTodoItem={() => deleteTodoItem(item.id)}
+        makeTodoCompleted={() => makeTodoCompleted(item.id)}
+        deleteTodo={() => deleteTodo(item.id)}
       />
     ))}
   </ul>

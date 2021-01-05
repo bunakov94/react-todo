@@ -4,7 +4,7 @@ import './TasksFilter.scss';
 
 type TaskFilterProps = {
   filter: string;
-  onChangeFilter: Function;
+  changeFilter: Function;
 };
 export default class TaskFilter extends Component<TaskFilterProps> {
   buttons = [
@@ -14,12 +14,12 @@ export default class TaskFilter extends Component<TaskFilterProps> {
   ];
 
   render() {
-    const { filter, onChangeFilter } = this.props;
+    const { filter, changeFilter } = this.props;
     return (
       <ul className="filters">
         {this.buttons.map(({ name, label }) => (
           <li key={name}>
-            <button onClick={() => onChangeFilter(name)} type="button" className={filter === name ? 'selected' : ''}>
+            <button onClick={() => changeFilter(name)} type="button" className={filter === name ? 'selected' : ''}>
               {label}
             </button>
           </li>

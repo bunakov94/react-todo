@@ -6,32 +6,32 @@ type NewTaskFormProps = {
 };
 export default class NewTaskForm extends Component<NewTaskFormProps> {
   state = {
-    description: '',
+    todoText: '',
   };
 
   onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      description: event.target.value,
+      todoText: event.target.value,
     });
   };
 
   onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const { addTodo } = this.props;
-    const { description } = this.state;
-    addTodo(description);
+    const { todoText } = this.state;
+    addTodo(todoText);
     this.setState({
-      description: '',
+      todoText: '',
     });
   };
 
   render() {
-    const { description } = this.state;
+    const { todoText } = this.state;
     return (
       <form onSubmit={this.onSubmit}>
         <input
           className="new-todo"
-          value={description}
+          value={todoText}
           placeholder="What needs to be done?"
           onChange={this.onChangeInput}
         />

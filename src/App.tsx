@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { nanoid } from 'nanoid';
 
 import Footer from './components/blocks/Footer';
 import Header from './components/blocks/Header';
@@ -10,9 +10,9 @@ import './App.scss';
 interface ITodoData {
   isCompleted: boolean;
   isEditing: boolean;
-  description: string;
-  created: string;
-  id: number;
+  todoText: string;
+  timeOfCreation: Date;
+  id: string;
 }
 
 type AppState = {
@@ -27,60 +27,58 @@ export default class App extends Component<AppProps, AppState> {
       {
         isCompleted: true,
         isEditing: false,
-        description: 'Completed task',
-        created: formatDistanceToNow(new Date()),
-        id: 0,
+        todoText: 'Completed task',
+        timeOfCreation: new Date(),
+        id: nanoid(),
       },
       {
         isCompleted: false,
         isEditing: true,
-        description: 'Editing task',
-        created: formatDistanceToNow(new Date()),
-        id: 1,
+        todoText: 'Editing task',
+        timeOfCreation: new Date(),
+        id: nanoid(),
       },
       {
         isCompleted: false,
         isEditing: false,
-        description: 'Active task',
-        created: formatDistanceToNow(new Date()),
-        id: 2,
+        todoText: 'Active task',
+        timeOfCreation: new Date(),
+        id: nanoid(),
       },
     ],
     filter: 'all',
   };
 
-  makeCompleted = (id: number) => {
+  makeTodoCompleted = (id: string) => {
     this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id);
-      const newItem = { ...todoData[index], isCompleted: !todoData[index].isCompleted };
-      const newState = [...todoData.slice(0, index), newItem, ...todoData.slice(index + 1)];
+      const index = todoData.findIndex((todo) => todo.id === id);
+      const newTodo = { ...todoData[index], isCompleted: !todoData[index].isCompleted };
+      const newState = [...todoData.slice(0, index), newTodo, ...todoData.slice(index + 1)];
       return { todoData: newState };
     });
   };
 
-  deleteTodoItem = (id: number) => {
+  deleteTodo = (id: string) => {
     this.setState(({ todoData }) => {
-      const newState = todoData.filter((el) => el.id !== id);
+      const newState = todoData.filter((todo) => todo.id !== id);
       return { todoData: newState };
     });
   };
 
   deleteAllCompletedTodoes = () => {
     this.setState(({ todoData }) => {
-      const newState = todoData.filter((el) => !el.isCompleted);
+      const newState = todoData.filter((todo) => !todo.isCompleted);
       return { todoData: newState };
     });
   };
 
-  getId = ({ todoData } = this.state) => todoData.length;
-
   addTodo = (text: string) => {
     const newTodo = {
-      description: text,
+      todoText: text,
       isCompleted: false,
       isEditing: false,
-      created: formatDistanceToNow(new Date()),
-      id: this.getId(),
+      timeOfCreation: new Date(),
+      id: nanoid(),
     };
 
     this.setState(({ todoData }) => {
@@ -90,38 +88,38 @@ export default class App extends Component<AppProps, AppState> {
     });
   };
 
-  onChangeFilter = (filter: string) => {
+  changeFilter = (filter: string) => {
     this.setState({ filter });
   };
 
-  filterItems(todos: ITodoData[], filter: string) {
-    let result = todos;
+  filterItems(todoArr: ITodoData[], filter: string) {
+    let filteredArr = todoArr;
     if (filter === 'active') {
-      result = todos.filter((item) => !item.isCompleted);
+      filteredArr = todoArr.filter((item) => !item.isCompleted);
     }
     if (filter === 'completed') {
-      result = todos.filter((item) => item.isCompleted);
+      filteredArr = todoArr.filter((item) => item.isCompleted);
     }
-    return result;
+    return filteredArr;
   }
 
   render() {
     const { todoData, filter } = this.state;
     const totalTodoCount = todoData.length;
-    const completedTodoCount = todoData.filter((el) => el.isCompleted).length;
+    const completedTodoCount = todoData.filter((todo) => todo.isCompleted).length;
     const leftTodoCount = totalTodoCount - completedTodoCount;
-    const todos = this.filterItems(todoData, filter);
+    const todoArr = this.filterItems(todoData, filter);
 
     return (
       <section className="todoapp">
         <Header addTodo={this.addTodo} />
         <section className="main">
-          <TaskList todos={todos} makeCompleted={this.makeCompleted} deleteTodoItem={this.deleteTodoItem} />
+          <TaskList todoArr={todoArr} makeTodoCompleted={this.makeTodoCompleted} deleteTodo={this.deleteTodo} />
           <Footer
             leftTodoes={leftTodoCount}
             deleteAllCompletedTodoes={this.deleteAllCompletedTodoes}
             filter={filter}
-            onChangeFilter={this.onChangeFilter}
+            changeFilter={this.changeFilter}
           />
         </section>
       </section>
@@ -129,11 +127,12 @@ export default class App extends Component<AppProps, AppState> {
   }
 }
 // TODO: TODO: TODO: Переделать ID - криво работает при добавлении и удалении
-// TODO: Реализовать добавление задачTODO:
-// TODO: Реализовать логику фильтрации
-// *Если выбран таб All, то отображаются все задачи.
-// *Если выбран таб Active, то отображаются лишь незавершенные задачи
-// *Если выбран таб Completed, то отображаются лишь завершенные задачи
-// TODO: TODO: Добавьте возможность удаления всех Completed задач нажатием на кнопку "Clear completed", которая расположена в нижней части списка задач с правой стороны.
-// TODO: TODO:Добавьте логику для счетчика незавершенных задач, расположенного в нижней части списка задач с левой стороны. Счетчик всегда должен показывать общее количество незавершенных задач независимо от того, что отображается на экране пользователя и какой таб выбран.
-// TODO: Результат должен быть ссылкой на репозиторий гитхаб
+// TODO: TODO: Фиксировать время создания задачи в момент ее добавления, а в списке выводить "created N seconds / minutes ago"
+// Добавить defaultProps вашим компонентам
+// TODO: TODO:Добавить propTypes вашим компонентам
+// TODO: TODO:Проверьте, что ваше приложение функционирует правильно
+// TODO: TODO:Проверьте, что во время использования приложения нет никаких ошибок / предупреждений в консоли браузера
+// Изучите статью о философии React и убедитесь, что ваше приложение соотвествует принятым в React правилам
+// Для первого пункта вам потребуется установить библиотеку date-fns и воспользоваться функцией formatDistanceToNow
+
+// Результат должен быть ссылкой на репозиторий гитхаб
