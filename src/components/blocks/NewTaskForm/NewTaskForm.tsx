@@ -1,37 +1,35 @@
 import React, { Component } from 'react';
+import { NewTaskFormProps } from '../../interfaces';
 import './NewTaskForm.scss';
 
-type NewTaskFormProps = {
-  addTodo: Function;
-};
 export default class NewTaskForm extends Component<NewTaskFormProps> {
   state = {
-    todoText: '',
+    taskText: '',
   };
 
   onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      todoText: event.target.value,
+      taskText: event.target.value,
     });
   };
 
   onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const { addTodo } = this.props;
-    const { todoText } = this.state;
-    addTodo(todoText);
+    const { addTask } = this.props;
+    const { taskText } = this.state;
+    addTask(taskText);
     this.setState({
-      todoText: '',
+      taskText: '',
     });
   };
 
   render() {
-    const { todoText } = this.state;
+    const { taskText } = this.state;
     return (
       <form onSubmit={this.onSubmit}>
         <input
           className="new-todo"
-          value={todoText}
+          value={taskText}
           placeholder="What needs to be done?"
           onChange={this.onChangeInput}
         />

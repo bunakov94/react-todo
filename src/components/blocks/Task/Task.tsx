@@ -1,28 +1,17 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { TaskDataListState, ITaskDataListProps } from '../../interfaces';
 
-interface ITodoDataListProps {
-  isCompleted: boolean;
-  isEditing: boolean;
-  todoText: string;
-  timeOfCreation: Date;
-  makeTodoCompleted: Function;
-  deleteTodo: Function;
-}
-type AppState = {
-  distanceFromCreation: string;
-};
-
-export default class Task extends Component<ITodoDataListProps, AppState> {
+export default class Task extends Component<ITaskDataListProps, TaskDataListState> {
   timerID!: number;
 
-  constructor(props: ITodoDataListProps) {
+  constructor(props: ITaskDataListProps) {
     super(props);
 
-    const { timeOfCreation } = this.props;
+    const { timeOfCreation, taskText } = this.props;
     this.state = {
       distanceFromCreation: formatDistanceToNow(timeOfCreation, { addSuffix: true, includeSeconds: true }),
+      editText: taskText,
     };
   }
 
@@ -34,6 +23,22 @@ export default class Task extends Component<ITodoDataListProps, AppState> {
     clearInterval(this.timerID);
   }
 
+  submitEditing = (event: React.FormEvent) => {
+    event.preventDefault();
+    const { id, updateTask, deleteTask } = this.props;
+    const { editText } = this.state;
+    updateTask(id, editText);
+    if (editText === '') {
+      deleteTask(id);
+    }
+  };
+
+  onChangeEditInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      editText: event.target.value,
+    });
+  };
+
   tick() {
     const { timeOfCreation } = this.props;
     this.setState({
@@ -42,28 +47,30 @@ export default class Task extends Component<ITodoDataListProps, AppState> {
   }
 
   render() {
-    const { isCompleted, isEditing, todoText, makeTodoCompleted, deleteTodo }: ITodoDataListProps = this.props;
-    const { distanceFromCreation } = this.state;
+    const { id, isCompleted, makeTaskCompleted, deleteTask, editTask }: ITaskDataListProps = this.props;
+    const { distanceFromCreation, editText } = this.state;
 
     return (
-      <li className={classNames({ completed: isCompleted, editing: isEditing })}>
+      <>
         <div className="view">
           <input
             className="toggle"
             type="checkbox"
             name="input"
             defaultChecked={isCompleted}
-            onClick={() => makeTodoCompleted()}
+            onClick={() => makeTaskCompleted(id)}
           />
           <label htmlFor="input">
-            <span className="description">{todoText}</span>
+            <span className="description">{editText}</span>
             <span className="created">{distanceFromCreation}</span>
           </label>
-          <button type="button" aria-label="edit" className="icon icon-edit" />
-          <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => deleteTodo()} />
+          <button type="button" aria-label="edit" className="icon icon-edit" onClick={() => editTask(id)} />
+          <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => deleteTask(id)} />
         </div>
-        <input type="text" className="edit" value="Editing task" readOnly />
-      </li>
+        <form onSubmit={this.submitEditing}>
+          <input type="text" className="edit" value={editText} onChange={this.onChangeEditInput} />
+        </form>
+      </>
     );
   }
 }

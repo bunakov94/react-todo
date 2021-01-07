@@ -1,32 +1,35 @@
 import React from 'react';
+import classNames from 'classnames';
 import Task from '../Task';
+import { TaskListProps } from '../../interfaces';
 
 import './TaskList.scss';
 
-interface ITodoDataList {
-  isCompleted: boolean;
-  isEditing: boolean;
-  todoText: string;
-  timeOfCreation: Date;
-  id: string;
-}
-
-type TodoListProps = {
-  todoArr: ITodoDataList[];
-  makeTodoCompleted: Function;
-  deleteTodo: Function;
-};
-
-const TaskList: React.FC<TodoListProps> = ({ todoArr, makeTodoCompleted, deleteTodo }: TodoListProps) => (
+const TaskList: React.FC<TaskListProps> = ({
+  filteredTasks,
+  makeTaskCompleted,
+  deleteTask,
+  editTask,
+  updateTask,
+}: TaskListProps) => (
   <ul className="todo-list">
-    {todoArr.map((item) => (
-      <Task
-        {...item}
-        key={item.id}
-        makeTodoCompleted={() => makeTodoCompleted(item.id)}
-        deleteTodo={() => deleteTodo(item.id)}
-      />
-    ))}
+    {filteredTasks.length ? (
+      filteredTasks.map((item) => (
+        <li key={item.id} className={classNames({ completed: item.isCompleted, editing: item.isEditing })}>
+          <Task
+            {...item}
+            makeTaskCompleted={() => makeTaskCompleted(item.id)}
+            deleteTask={() => deleteTask(item.id)}
+            editTask={() => editTask(item.id)}
+            updateTask={updateTask}
+          />
+        </li>
+      ))
+    ) : (
+      <li>
+        <h2 className="nothing">There is nothing here yet</h2>
+      </li>
+    )}
   </ul>
 );
 

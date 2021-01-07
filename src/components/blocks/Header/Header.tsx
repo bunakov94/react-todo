@@ -1,15 +1,12 @@
 import React from 'react';
+import { HeaderProps } from '../../interfaces';
 import NewTaskForm from '../NewTaskForm';
 import './Header.scss';
 
-type HeaderProps = {
-  addTodo: Function;
-};
-
-const Header: React.FC<HeaderProps> = ({ addTodo }: HeaderProps) => (
+const Header: React.FC<HeaderProps> = ({ addTask }: HeaderProps) => (
   <header>
     <h1>todos</h1>
-    <NewTaskForm addTodo={addTodo} />
+    <NewTaskForm addTask={addTask} />
   </header>
 );
 

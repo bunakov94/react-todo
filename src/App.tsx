@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
+import { ITaskData, AppState, AppProps } from './components/interfaces';
 
 import Footer from './components/blocks/Footer';
 import Header from './components/blocks/Header';
@@ -7,41 +8,27 @@ import TaskList from './components/blocks/TaskList';
 
 import './App.scss';
 
-interface ITodoData {
-  isCompleted: boolean;
-  isEditing: boolean;
-  todoText: string;
-  timeOfCreation: Date;
-  id: string;
-}
-
-type AppState = {
-  todoData: ITodoData[];
-  filter: string;
-};
-
-type AppProps = {};
 export default class App extends Component<AppProps, AppState> {
   state: AppState = {
-    todoData: [
+    tasks: [
       {
         isCompleted: true,
         isEditing: false,
-        todoText: 'Completed task',
-        timeOfCreation: new Date(),
-        id: nanoid(),
-      },
-      {
-        isCompleted: false,
-        isEditing: true,
-        todoText: 'Editing task',
+        taskText: 'Completed task',
         timeOfCreation: new Date(),
         id: nanoid(),
       },
       {
         isCompleted: false,
         isEditing: false,
-        todoText: 'Active task',
+        taskText: 'Editing task',
+        timeOfCreation: new Date(),
+        id: nanoid(),
+      },
+      {
+        isCompleted: false,
+        isEditing: false,
+        taskText: 'Active task',
         timeOfCreation: new Date(),
         id: nanoid(),
       },
@@ -49,75 +36,93 @@ export default class App extends Component<AppProps, AppState> {
     filter: 'all',
   };
 
-  makeTodoCompleted = (id: string) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((todo) => todo.id === id);
-      const newTodo = { ...todoData[index], isCompleted: !todoData[index].isCompleted };
-      const newState = [...todoData.slice(0, index), newTodo, ...todoData.slice(index + 1)];
-      return { todoData: newState };
+  deleteTask = (id: string) => {
+    this.setState(({ tasks }) => ({ tasks: tasks.filter((task) => task.id !== id) }));
+  };
+
+  deleteCompletedTasks = () => {
+    this.setState(({ tasks }) => ({ tasks: tasks.filter((task) => !task.isCompleted) }));
+  };
+
+  editTask = (id: string) => {
+    this.setState(({ tasks: oldTasks }) => {
+      const tasks = [...oldTasks];
+      const taskIndex = tasks.findIndex((task) => task.id === id);
+      tasks[taskIndex].isEditing = true;
+      return { tasks };
     });
   };
 
-  deleteTodo = (id: string) => {
-    this.setState(({ todoData }) => {
-      const newState = todoData.filter((todo) => todo.id !== id);
-      return { todoData: newState };
+  makeTaskCompleted = (id: string) => {
+    this.setState(({ tasks }) => {
+      const taskIndex = tasks.findIndex((task) => task.id === id);
+      const newTask = { ...tasks[taskIndex], isCompleted: !tasks[taskIndex].isCompleted };
+      const newState = [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)];
+      return { tasks: newState };
     });
   };
 
-  deleteAllCompletedTodoes = () => {
-    this.setState(({ todoData }) => {
-      const newState = todoData.filter((todo) => !todo.isCompleted);
-      return { todoData: newState };
+  updateTask = (id: string, text: string) => {
+    this.setState(({ tasks: oldTasks }) => {
+      const tasks = [...oldTasks];
+      const taskIndex = tasks.findIndex((task) => task.id === id);
+      tasks[taskIndex].taskText = text;
+      tasks[taskIndex].isEditing = false;
+      return { tasks };
     });
   };
 
-  addTodo = (text: string) => {
-    const newTodo = {
-      todoText: text,
-      isCompleted: false,
-      isEditing: false,
-      timeOfCreation: new Date(),
-      id: nanoid(),
-    };
+  addTask = (text: string) => {
+    if (text !== '') {
+      const newTask = {
+        taskText: text,
+        isCompleted: false,
+        isEditing: false,
+        timeOfCreation: new Date(),
+        id: nanoid(),
+      };
 
-    this.setState(({ todoData }) => {
-      const newState = [...todoData, newTodo];
-
-      return { todoData: newState };
-    });
+      this.setState(({ tasks: oldTasks }) => {
+        const tasks = [...oldTasks, newTask];
+        return { tasks };
+      });
+    }
   };
 
   changeFilter = (filter: string) => {
     this.setState({ filter });
   };
 
-  filterItems(todoArr: ITodoData[], filter: string) {
-    let filteredArr = todoArr;
+  filterTasks(tasks: ITaskData[], filter: string) {
+    let filteredArr = tasks;
     if (filter === 'active') {
-      filteredArr = todoArr.filter((item) => !item.isCompleted);
+      filteredArr = tasks.filter((item) => !item.isCompleted);
     }
     if (filter === 'completed') {
-      filteredArr = todoArr.filter((item) => item.isCompleted);
+      filteredArr = tasks.filter((item) => item.isCompleted);
     }
     return filteredArr;
   }
 
   render() {
-    const { todoData, filter } = this.state;
-    const totalTodoCount = todoData.length;
-    const completedTodoCount = todoData.filter((todo) => todo.isCompleted).length;
-    const leftTodoCount = totalTodoCount - completedTodoCount;
-    const todoArr = this.filterItems(todoData, filter);
+    const { tasks, filter } = this.state;
+    const tasksLeft = tasks.reduce((acc, el) => (el.isCompleted ? acc : acc + 1), 0);
+    const filteredTasks = this.filterTasks(tasks, filter);
 
     return (
       <section className="todoapp">
-        <Header addTodo={this.addTodo} />
+        <Header addTask={this.addTask} />
         <section className="main">
-          <TaskList todoArr={todoArr} makeTodoCompleted={this.makeTodoCompleted} deleteTodo={this.deleteTodo} />
+          <TaskList
+            filteredTasks={filteredTasks}
+            makeTaskCompleted={this.makeTaskCompleted}
+            deleteTask={this.deleteTask}
+            editTask={this.editTask}
+            updateTask={this.updateTask}
+          />
           <Footer
-            leftTodoes={leftTodoCount}
-            deleteAllCompletedTodoes={this.deleteAllCompletedTodoes}
+            tasksLeft={tasksLeft}
+            deleteCompletedTasks={this.deleteCompletedTasks}
             filter={filter}
             changeFilter={this.changeFilter}
           />

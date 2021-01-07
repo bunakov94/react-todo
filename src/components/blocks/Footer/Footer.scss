@@ -8,6 +8,10 @@
   font-size: 15px;
   border-top: 1px solid #e6e6e6;
   color: gray;
+  @media (max-width: 480px) {
+    flex-direction: column;
+    height: 100%;
+  }
 }
 
 .footer:before {
@@ -24,6 +28,10 @@
 }
 .todo-count {
   text-align: left;
+  @media (max-width: 480px) {
+    order: 1;
+    margin-top: 15px;
+  }
 }
 
 .todo-count strong {
@@ -35,17 +43,12 @@ html .clear-completed:active {
   line-height: 20px;
   text-decoration: none;
   cursor: pointer;
+  @media (max-width: 480px) {
+    order: 2;
+    margin-top: 15px;
+  }
 }
 
 .clear-completed:hover {
   text-decoration: underline;
-}
-@media (max-width: 430px) {
-  .footer {
-    height: 50px;
-  }
-
-  .filters {
-    bottom: 10px;
-  }
 }

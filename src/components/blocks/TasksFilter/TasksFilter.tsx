@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
+import { TaskFilterProps } from '../../interfaces';
 
 import './TasksFilter.scss';
 
-type TaskFilterProps = {
-  filter: string;
-  changeFilter: Function;
-};
 export default class TaskFilter extends Component<TaskFilterProps> {
   buttons = [
     { name: 'all', label: 'ALL' },

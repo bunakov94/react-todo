@@ -4,6 +4,9 @@
   list-style: none;
   right: 0;
   left: 0;
+  @media (max-width: 480px) {
+    order: 0;
+  }
 }
 
 .filters li {
