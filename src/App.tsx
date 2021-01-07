@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
-import { ITaskData, AppState, AppProps } from './components/interfaces';
+import { ITask, AppState, AppProps } from './components/types/interfaces';
+import FilterTypes from './components/types/filterTypes';
 
 import Footer from './components/blocks/Footer';
 import Header from './components/blocks/Header';
@@ -14,26 +15,26 @@ export default class App extends Component<AppProps, AppState> {
       {
         isCompleted: true,
         isEditing: false,
-        taskText: 'Completed task',
+        text: 'Completed task',
         timeOfCreation: new Date(),
         id: nanoid(),
       },
       {
         isCompleted: false,
         isEditing: false,
-        taskText: 'Editing task',
+        text: 'Editing task',
         timeOfCreation: new Date(),
         id: nanoid(),
       },
       {
         isCompleted: false,
         isEditing: false,
-        taskText: 'Active task',
+        text: 'Active task',
         timeOfCreation: new Date(),
         id: nanoid(),
       },
     ],
-    filter: 'all',
+    filter: FilterTypes.ALL,
   };
 
   deleteTask = (id: string) => {
@@ -60,19 +61,13 @@ export default class App extends Component<AppProps, AppState> {
       tasks[taskIndex].isCompleted = !isCompleted;
       return { tasks };
     });
-    // this.setState(({ tasks }) => {
-    //   const taskIndex = tasks.findIndex((task) => task.id === id);
-    //   const newTask = { ...tasks[taskIndex], isCompleted: !tasks[taskIndex].isCompleted };
-    //   const newState = [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)];
-    //   return { tasks: newState };
-    // });
   };
 
   updateTask = (id: string, text: string) => {
     this.setState(({ tasks: oldTasks }) => {
       const tasks = [...oldTasks];
       const taskIndex = tasks.findIndex((task) => task.id === id);
-      tasks[taskIndex].taskText = text;
+      tasks[taskIndex].text = text;
       tasks[taskIndex].isEditing = false;
       return { tasks };
     });
@@ -81,7 +76,7 @@ export default class App extends Component<AppProps, AppState> {
   addTask = (text: string) => {
     if (text !== '') {
       const newTask = {
-        taskText: text,
+        text,
         isCompleted: false,
         isEditing: false,
         timeOfCreation: new Date(),
@@ -95,20 +90,19 @@ export default class App extends Component<AppProps, AppState> {
     }
   };
 
-  changeFilter = (filter: string) => {
+  changeFilter = (filter: number) => {
     this.setState({ filter });
   };
 
-  filterTasks(tasks: ITaskData[], filter: string) {
-    let filteredArr = tasks;
-    if (filter === 'active') {
-      filteredArr = tasks.filter((item) => !item.isCompleted);
+  filterTasks = (tasks: ITask[], filter: number) => {
+    if (filter === FilterTypes.UNCOMPLETED) {
+      return tasks.filter((item) => !item.isCompleted);
     }
-    if (filter === 'completed') {
-      filteredArr = tasks.filter((item) => item.isCompleted);
+    if (filter === FilterTypes.COMPLETED) {
+      return tasks.filter((item) => item.isCompleted);
     }
-    return filteredArr;
-  }
+    return tasks;
+  };
 
   render() {
     const { tasks, filter } = this.state;

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import Task from '../Task';
-import { TaskListProps } from '../../interfaces';
+import { TaskListProps } from '../../types/interfaces';
 
 import './TaskList.scss';
 
@@ -11,10 +11,10 @@ const TaskList: React.FC<TaskListProps> = ({
   deleteTask,
   editTask,
   updateTask,
-}: TaskListProps) => (
-  <ul className="todo-list">
-    {filteredTasks.length ? (
-      filteredTasks.map((item) => (
+}: TaskListProps) =>
+  filteredTasks.length ? (
+    <ul className="todo-list">
+      {filteredTasks.map((item) => (
         <li key={item.id} className={classNames({ completed: item.isCompleted, editing: item.isEditing })}>
           <Task
             {...item}
@@ -24,13 +24,10 @@ const TaskList: React.FC<TaskListProps> = ({
             updateTask={updateTask}
           />
         </li>
-      ))
-    ) : (
-      <li>
-        <h2 className="nothing">There is nothing here yet</h2>
-      </li>
-    )}
-  </ul>
-);
+      ))}
+    </ul>
+  ) : (
+    <h2 className="nothing">There is nothing here yet</h2>
+  );
 
 export default TaskList;

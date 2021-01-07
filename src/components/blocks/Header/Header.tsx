@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeaderProps } from '../../interfaces';
+import { HeaderProps } from '../../types/interfaces';
 import NewTaskForm from '../NewTaskForm';
 import './Header.scss';
 

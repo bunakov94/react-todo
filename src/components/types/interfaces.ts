@@ -1,13 +1,13 @@
-export interface ITaskData {
+export interface ITask {
   isCompleted: boolean;
   isEditing: boolean;
-  taskText: string;
+  text: string;
   timeOfCreation: Date;
   id: string;
 }
 
 export type TaskListProps = {
-  filteredTasks: ITaskData[];
+  filteredTasks: ITask[];
   toggleComplete: (id: string, isCompleted: boolean) => void;
   deleteTask: (id: string) => void;
   editTask: (id: string) => void;
@@ -15,16 +15,16 @@ export type TaskListProps = {
 };
 
 export type AppState = {
-  tasks: ITaskData[];
-  filter: string;
+  tasks: ITask[];
+  filter: number;
 };
 
 export type AppProps = {};
 
-export interface ITaskDataListProps {
+export interface ITaskListProps {
   isCompleted: boolean;
   isEditing: boolean;
-  taskText: string;
+  text: string;
   timeOfCreation: Date;
   id: string;
   toggleComplete: (id: string, isCompleted: boolean) => void;
@@ -32,7 +32,7 @@ export interface ITaskDataListProps {
   editTask: (id: string) => void;
   updateTask: (id: string, text: string) => void;
 }
-export type TaskDataListState = {
+export type TaskListState = {
   distanceFromCreation: string;
   editText: string;
 };
@@ -40,8 +40,8 @@ export type TaskDataListState = {
 export type FooterProps = {
   tasksLeft: number;
   deleteCompletedTasks: () => void;
-  filter: string;
-  changeFilter: (filter: string) => void;
+  filter: number;
+  changeFilter: (filter: number) => void;
 };
 
 export type HeaderProps = {
@@ -53,6 +53,8 @@ export type NewTaskFormProps = {
 };
 
 export type TaskFilterProps = {
-  filter: string;
-  changeFilter: (filter: string) => void;
+  filter: number;
+  changeFilter: (filter: number) => void;
 };
+
+export type Keys = keyof ITask;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FooterProps } from '../../interfaces';
+import { FooterProps } from '../../types/interfaces';
 import TaskFilter from '../TasksFilter';
 
 import './Footer.scss';

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { TaskDataListState, ITaskDataListProps } from '../../interfaces';
+import { TaskListState, ITaskListProps } from '../../types/interfaces';
 
-export default class Task extends Component<ITaskDataListProps, TaskDataListState> {
-  timerID!: number;
+export default class Task extends Component<ITaskListProps, TaskListState> {
+  timerID?: number;
 
-  constructor(props: ITaskDataListProps) {
+  constructor(props: ITaskListProps) {
     super(props);
 
-    const { timeOfCreation, taskText } = this.props;
+    const { timeOfCreation, text } = this.props;
     this.state = {
       distanceFromCreation: formatDistanceToNow(timeOfCreation, { addSuffix: true, includeSeconds: true }),
-      editText: taskText,
+      editText: text,
     };
   }
 
@@ -52,7 +52,7 @@ export default class Task extends Component<ITaskDataListProps, TaskDataListStat
   }
 
   render() {
-    const { id, isCompleted, deleteTask, editTask }: ITaskDataListProps = this.props;
+    const { id, isCompleted, deleteTask, editTask }: ITaskListProps = this.props;
     const { distanceFromCreation, editText } = this.state;
 
     return (

@@ -1,31 +1,31 @@
-import React, { Component } from 'react';
-import { TaskFilterProps } from '../../interfaces';
+import React from 'react';
+import { TaskFilterProps } from '../../types/interfaces';
+import FilterTypes from '../../types/filterTypes';
 
 import './TasksFilter.scss';
 
-export default class TaskFilter extends Component<TaskFilterProps> {
-  buttons = [
-    { filterName: 'all', label: 'ALL' },
-    { filterName: 'active', label: 'Active' },
-    { filterName: 'completed', label: 'Completed' },
+const TaskFilter: React.FC<TaskFilterProps> = ({ filter, changeFilter }: TaskFilterProps) => {
+  const buttons = [
+    { filterName: FilterTypes.ALL, label: 'ALL' },
+    { filterName: FilterTypes.UNCOMPLETED, label: 'Active' },
+    { filterName: FilterTypes.COMPLETED, label: 'Completed' },
   ];
 
-  render() {
-    const { filter, changeFilter } = this.props;
-    return (
-      <ul className="filters">
-        {this.buttons.map(({ filterName, label }) => (
-          <li key={filterName}>
-            <button
-              onClick={() => changeFilter(filterName)}
-              type="button"
-              className={filter === filterName ? 'selected' : ''}
-            >
-              {label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-}
+  return (
+    <ul className="filters">
+      {buttons.map(({ filterName, label }) => (
+        <li key={filterName}>
+          <button
+            onClick={() => changeFilter(filterName)}
+            type="button"
+            className={filter === filterName ? 'selected' : ''}
+          >
+            {label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+export default TaskFilter;
