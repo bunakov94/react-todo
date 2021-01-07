@@ -39,6 +39,11 @@ export default class Task extends Component<ITaskDataListProps, TaskDataListStat
     });
   };
 
+  onToggleComplete = () => {
+    const { id, isCompleted, toggleComplete } = this.props;
+    toggleComplete(id, isCompleted);
+  };
+
   tick() {
     const { timeOfCreation } = this.props;
     this.setState({
@@ -47,7 +52,7 @@ export default class Task extends Component<ITaskDataListProps, TaskDataListStat
   }
 
   render() {
-    const { id, isCompleted, makeTaskCompleted, deleteTask, editTask }: ITaskDataListProps = this.props;
+    const { id, isCompleted, deleteTask, editTask }: ITaskDataListProps = this.props;
     const { distanceFromCreation, editText } = this.state;
 
     return (
@@ -58,7 +63,7 @@ export default class Task extends Component<ITaskDataListProps, TaskDataListStat
             type="checkbox"
             name="input"
             defaultChecked={isCompleted}
-            onClick={() => makeTaskCompleted(id)}
+            onClick={this.onToggleComplete}
           />
           <label htmlFor="input">
             <span className="description">{editText}</span>

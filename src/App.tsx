@@ -53,13 +53,19 @@ export default class App extends Component<AppProps, AppState> {
     });
   };
 
-  makeTaskCompleted = (id: string) => {
-    this.setState(({ tasks }) => {
+  toggleComplete = (id: string, isCompleted: boolean) => {
+    this.setState(({ tasks: oldTasks }) => {
+      const tasks = [...oldTasks];
       const taskIndex = tasks.findIndex((task) => task.id === id);
-      const newTask = { ...tasks[taskIndex], isCompleted: !tasks[taskIndex].isCompleted };
-      const newState = [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)];
-      return { tasks: newState };
+      tasks[taskIndex].isCompleted = !isCompleted;
+      return { tasks };
     });
+    // this.setState(({ tasks }) => {
+    //   const taskIndex = tasks.findIndex((task) => task.id === id);
+    //   const newTask = { ...tasks[taskIndex], isCompleted: !tasks[taskIndex].isCompleted };
+    //   const newState = [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)];
+    //   return { tasks: newState };
+    // });
   };
 
   updateTask = (id: string, text: string) => {
@@ -115,7 +121,7 @@ export default class App extends Component<AppProps, AppState> {
         <section className="main">
           <TaskList
             filteredTasks={filteredTasks}
-            makeTaskCompleted={this.makeTaskCompleted}
+            toggleComplete={this.toggleComplete}
             deleteTask={this.deleteTask}
             editTask={this.editTask}
             updateTask={this.updateTask}

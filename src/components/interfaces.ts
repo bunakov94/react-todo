@@ -8,7 +8,7 @@ export interface ITaskData {
 
 export type TaskListProps = {
   filteredTasks: ITaskData[];
-  makeTaskCompleted: (id: string) => void;
+  toggleComplete: (id: string, isCompleted: boolean) => void;
   deleteTask: (id: string) => void;
   editTask: (id: string) => void;
   updateTask: (id: string, text: string) => void;
@@ -27,7 +27,7 @@ export interface ITaskDataListProps {
   taskText: string;
   timeOfCreation: Date;
   id: string;
-  makeTaskCompleted: (id: string) => void;
+  toggleComplete: (id: string, isCompleted: boolean) => void;
   deleteTask: (id: string) => void;
   editTask: (id: string) => void;
   updateTask: (id: string, text: string) => void;

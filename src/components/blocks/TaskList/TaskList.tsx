@@ -7,7 +7,7 @@ import './TaskList.scss';
 
 const TaskList: React.FC<TaskListProps> = ({
   filteredTasks,
-  makeTaskCompleted,
+  toggleComplete,
   deleteTask,
   editTask,
   updateTask,
@@ -18,9 +18,9 @@ const TaskList: React.FC<TaskListProps> = ({
         <li key={item.id} className={classNames({ completed: item.isCompleted, editing: item.isEditing })}>
           <Task
             {...item}
-            makeTaskCompleted={() => makeTaskCompleted(item.id)}
-            deleteTask={() => deleteTask(item.id)}
-            editTask={() => editTask(item.id)}
+            toggleComplete={toggleComplete}
+            deleteTask={deleteTask}
+            editTask={editTask}
             updateTask={updateTask}
           />
         </li>
