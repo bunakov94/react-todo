@@ -161,3 +161,39 @@
     height: 40px;
   }
 }
+
+.todo-list li .icon-pause,
+.todo-list li .icon-play {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.todo-list li .icon-play {
+  font-size: 15px;
+}
+
+.icon-pause::after {
+  content: '⏸';
+  position: absolute;
+  top: 7px;
+  right: -185px;
+}
+
+.icon-play::after {
+  content: '▶';
+  position: absolute;
+  top: 7px;
+  right: -210px;
+}
+
+.timer {
+  position: relative;
+}
+
+p {
+  margin: 0;
+}
+p.timer-count {
+  font-size: 16px;
+}

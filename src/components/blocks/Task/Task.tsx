@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { formatDistanceToNow, formatDuration, getMinutes, getSeconds } from 'date-fns';
 import { TaskListState, ITaskListProps } from '../../types/interfaces';
 
 export default class Task extends Component<ITaskListProps, TaskListState> {
   timerID?: number;
 
+  counterID?: number;
+
   constructor(props: ITaskListProps) {
     super(props);
 
-    const { timeOfCreation, text } = this.props;
+    const {
+      timeOfCreation,
+      text,
+      timer: { minutes, seconds },
+    } = this.props;
     this.state = {
       distanceFromCreation: formatDistanceToNow(timeOfCreation, { addSuffix: true, includeSeconds: true }),
       editText: text,
+      timer: {
+        minutes,
+        seconds,
+      },
+      isPlay: false,
     };
   }
 
@@ -21,6 +32,7 @@ export default class Task extends Component<ITaskListProps, TaskListState> {
 
   componentWillUnmount() {
     clearInterval(this.timerID);
+    clearInterval(this.counterID);
   }
 
   submitEditing = (event: React.FormEvent) => {
@@ -51,9 +63,44 @@ export default class Task extends Component<ITaskListProps, TaskListState> {
     });
   }
 
+  count() {
+    this.setState(({ timer }) => {
+      let min = timer.minutes;
+      let sec = timer.seconds;
+      if (sec + 1 !== 60) {
+        sec += 1;
+      } else {
+        min += 1;
+        sec = 0;
+      }
+
+      return {
+        timer: {
+          minutes: min,
+          seconds: sec,
+        },
+      };
+    });
+  }
+
+  pause() {
+    this.setState({ isPlay: false });
+    clearInterval(this.counterID);
+  }
+
+  play() {
+    const { isPlay } = this.state;
+    if (!isPlay) {
+      this.counterID = window.setInterval(() => this.count(), 1000);
+      this.setState({ isPlay: true });
+    }
+  }
+
   render() {
     const { id, isCompleted, deleteTask, editTask }: ITaskListProps = this.props;
-    const { distanceFromCreation, editText } = this.state;
+    const { distanceFromCreation, editText, timer } = this.state;
+    console.log(`${getMinutes(new Date())}, ${getSeconds(new Date())}`);
+    console.log(new Date().getTime() - 34563456345);
 
     return (
       <>
@@ -67,6 +114,11 @@ export default class Task extends Component<ITaskListProps, TaskListState> {
           />
           <label htmlFor="input">
             <span className="description">{editText}</span>
+            <span className="description timer">
+              <button aria-label="Play" className="icon icon-play" type="button" onClick={() => this.play()} />
+              <button aria-label="Pause" className="icon icon-pause" type="button" onClick={() => this.pause()} />
+              <p className="timer-count">{formatDuration(timer, { format: ['minutes', 'seconds'] })}</p>
+            </span>
             <span className="created">{distanceFromCreation}</span>
           </label>
           <button type="button" aria-label="edit" className="icon icon-edit" onClick={() => editTask(id)} />

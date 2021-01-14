@@ -18,6 +18,10 @@ export default class App extends Component<AppProps, AppState> {
         text: 'Completed task',
         timeOfCreation: new Date(),
         id: nanoid(),
+        timer: {
+          minutes: 10,
+          seconds: 25,
+        },
       },
       {
         isCompleted: false,
@@ -25,6 +29,10 @@ export default class App extends Component<AppProps, AppState> {
         text: 'Editing task',
         timeOfCreation: new Date(),
         id: nanoid(),
+        timer: {
+          minutes: 1,
+          seconds: 30,
+        },
       },
       {
         isCompleted: false,
@@ -32,6 +40,10 @@ export default class App extends Component<AppProps, AppState> {
         text: 'Active task',
         timeOfCreation: new Date(),
         id: nanoid(),
+        timer: {
+          minutes: 0,
+          seconds: 0,
+        },
       },
     ],
     filter: FilterTypes.ALL,
@@ -73,7 +85,7 @@ export default class App extends Component<AppProps, AppState> {
     });
   };
 
-  addTask = (text: string) => {
+  addTask = (text: string, min: number, sec: number) => {
     if (text !== '') {
       const newTask = {
         text,
@@ -81,7 +93,13 @@ export default class App extends Component<AppProps, AppState> {
         isEditing: false,
         timeOfCreation: new Date(),
         id: nanoid(),
+        timer: {
+          minutes: 0,
+          seconds: 0,
+        },
       };
+      newTask.timer.minutes = +min;
+      newTask.timer.seconds = +sec;
 
       this.setState(({ tasks: oldTasks }) => {
         const tasks = [...oldTasks, newTask];

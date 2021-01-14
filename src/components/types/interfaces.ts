@@ -4,6 +4,10 @@ export interface ITask {
   text: string;
   timeOfCreation: Date;
   id: string;
+  timer: {
+    minutes: number;
+    seconds: number;
+  };
 }
 
 export type TaskListProps = {
@@ -27,6 +31,10 @@ export interface ITaskListProps {
   text: string;
   timeOfCreation: Date;
   id: string;
+  timer: {
+    minutes: number;
+    seconds: number;
+  };
   toggleComplete: (id: string, isCompleted: boolean) => void;
   deleteTask: (id: string) => void;
   editTask: (id: string) => void;
@@ -35,6 +43,11 @@ export interface ITaskListProps {
 export type TaskListState = {
   distanceFromCreation: string;
   editText: string;
+  timer: {
+    minutes: number;
+    seconds: number;
+  };
+  isPlay: boolean;
 };
 
 export type FooterProps = {
@@ -45,11 +58,11 @@ export type FooterProps = {
 };
 
 export type HeaderProps = {
-  addTask: (text: string) => void;
+  addTask: (text: string, min: number, sec: number) => void;
 };
 
 export type NewTaskFormProps = {
-  addTask: (text: string) => void;
+  addTask: (text: string, min: number, sec: number) => void;
 };
 
 export type TaskFilterProps = {
