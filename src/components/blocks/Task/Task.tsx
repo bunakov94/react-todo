@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatDistanceToNow, formatDuration, getMinutes, getSeconds } from 'date-fns';
+import { formatDistanceToNow, formatDuration } from 'date-fns';
 import { TaskListState, ITaskListProps } from '../../types/interfaces';
 
 export default class Task extends Component<ITaskListProps, TaskListState> {
@@ -99,8 +99,6 @@ export default class Task extends Component<ITaskListProps, TaskListState> {
   render() {
     const { id, isCompleted, deleteTask, editTask }: ITaskListProps = this.props;
     const { distanceFromCreation, editText, timer } = this.state;
-    console.log(`${getMinutes(new Date())}, ${getSeconds(new Date())}`);
-    console.log(new Date().getTime() - 34563456345);
 
     return (
       <>
